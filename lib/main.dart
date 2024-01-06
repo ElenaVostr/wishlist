@@ -1,18 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:wishlist/data/firebase_service.dart';
+import 'package:wishlist/data/repositories/wish_repository_impl.dart';
 import 'package:wishlist/domain/models/wish.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: const FirebaseOptions(
-      apiKey: 'AIzaSyA8qA4qGCToiEZCvw-ZwVQG0ZbaoGGBR1s',
-      appId: '1:631325131862:android:bb14ff2f737c9c3272e7f7',
-      messagingSenderId: '631325131862',
-      projectId: 'wishlist-5bf25',
-    ),
-  );
+  FirebaseService firebaseService = FirebaseService();
+  await firebaseService.init();
   runApp(const MyApp());
 }
 
@@ -44,15 +39,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late CollectionReference<Wish> _wishesRef;
+  late FirebaseService _firebaseService;
 
   @override
   void initState() {
     super.initState();
-    _wishesRef = FirebaseFirestore.instance
+
+    _firebaseService = FirebaseService();
+
+    _wishesRef = _firebaseService.firestore
         .collection('wishes')
         .withConverter<Wish>(
             fromFirestore: (snapshot, _) => Wish.fromJson(snapshot.data()!, snapshot.id),
             toFirestore: (wish, _) => wish.toJson());
+  }
+
+  Future<void> _createWish() async {
+    WishRepositoryImpl wishRepositoryImpl = WishRepositoryImpl(firebaseService: _firebaseService);
+    wishRepositoryImpl.createWish(const Wish(name: 'новое желание'));
   }
 
   @override
@@ -84,7 +88,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ))
           ],
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _createWish,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ), //// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
