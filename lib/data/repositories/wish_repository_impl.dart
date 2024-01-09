@@ -27,13 +27,8 @@ class WishRepositoryImpl implements WishRepository {
 
   @override
   Stream<List<Wish>> getWishListStream() {
-    return firebaseService.firestore
-        .collection('wishes')
-        .withConverter<Wish>(
-            fromFirestore: (snapshot, _) =>
-                Wish.fromJson(snapshot.data()!, snapshot.id),
-            toFirestore: (wish, _) => wish.toJson())
-        .snapshots()
-        .map((event) => event.docs.map((e) => e.data()).toList());
+    return firebaseService.firestore.collection('wishes').snapshots().map(
+        (event) =>
+            event.docs.map((e) => Wish.fromJson(e.data(), e.id)).toList());
   }
 }

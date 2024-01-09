@@ -1,5 +1,4 @@
 import 'package:wishlist/common/utils/json_ext.dart';
-import 'package:wishlist/common/utils/list_extensions.dart';
 import 'package:wishlist/domain/enums/wish_status.dart';
 
 typedef Id = int;
@@ -34,22 +33,14 @@ class Wish {
       description: JsonExt.getString(json['description']) ?? '',
       status: JsonExt.getEnum<WishStatus>(json['status'], values: WishStatus.values) ?? WishStatus.undone,
       urls: JsonExt.getList<Link>(json['urls'], converter: (e) => e),
-      //urls: (json['urls'] as List<dynamic>?)?.cast<Link>().toList() ?? const <Link>[],
       images: (json['images'] as List<dynamic>?)?.cast<Link>().toList() ?? const <Link>[],
       lists: (json['lists'] as List<dynamic>?)?.cast<int>() ?? const <Id>[],
       price: JsonExt.getPairedDouble(json['price']),
-      // price: json['price'] == null
-      //     ? null
-      //     : (
-      //         (json['price'][0] as num).toDouble(),
-      //         (json['price'][1] as num?)?.toDouble(),
-      //       ),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      //'uid': uid,
       'name': name,
       'description': description,
       'status': status.toName(),
