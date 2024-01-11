@@ -6,7 +6,7 @@ class DeleteWishUseCase {
 
   DeleteWishUseCase({required WishRepository wishRepository}) : _wishRepository = wishRepository;
 
-  Future<void> run(int uid) {
+  Future<void> run(String uid) {
     return _wishRepository.deleteWish(uid);
   }
 }

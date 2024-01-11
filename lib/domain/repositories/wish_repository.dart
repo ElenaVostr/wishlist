@@ -5,6 +5,6 @@ abstract class WishRepository {
 
   Future<void> replaceWish(Wish wish);
 
-  Future<void> deleteWish(int uid);
+  Future<void> deleteWish(String uid);
 
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "631325131862",
+    "project_id": "wishlist-5bf25",
+    "storage_bucket": "wishlist-5bf25.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631325131862:android:bb14ff2f737c9c3272e7f7",
+        "android_client_info": {
+          "package_name": "ru.vostrapps.wishlist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8qA4qGCToiEZCvw-ZwVQG0ZbaoGGBR1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

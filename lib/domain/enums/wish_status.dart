@@ -1,1 +1,6 @@
-enum WishStatus { undone, done, archived, reserved }
+enum WishStatus {
+  undone,
+  done,
+  archived,
+  reserved;
+}
