@@ -55,12 +55,6 @@ abstract final class JsonExt {
     } else if (value is num) {
       final first = value.toDouble();
       return (first, null);
-      // } else if (value is (String, String?)) {
-      //   final first = double.tryParse(value.$1);
-      //   final second = value.$2 == null ? null : double.tryParse(value.$2!);
-      //   return first == null ? null : (first, second);
-      // } else if (value is (num, num?)) {
-      //   return (value.$1.toDouble(), value.$2?.toDouble());
     } else if (value is Iterable) {
       if (value.isEmpty) {
         return null;

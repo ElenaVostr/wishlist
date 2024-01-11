@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wishlist/di/di.dart';
 import 'package:wishlist/domain/usecases/create_wish_usecase.dart';
 import 'package:wishlist/domain/usecases/get_wish_list_stream_usecase.dart';
-import 'package:wishlist/main.dart';
+import 'package:wishlist/ui/wish_page/wish_page.dart';
 
 import 'bloc/main_page_wish_list_bloc.dart';
 
