@@ -27,28 +27,48 @@ class MainPageWishListBloc
   StreamSubscription? _streamSubscription;
 
   void _init() {
-    on<LoadWishListEvent>((event, emit) {
-      final Stream<List<Wish>> streamWishList = _getWishListStreamUseCase.run();
-      _streamSubscription = streamWishList.listen((data) {
-        add(WishListLoadedEvent(wishList: data));
-      }, onError: (error) {
-        add(ErrorEvent(errorMessage: error.toString()));
-      });
-    });
+    on<LoadWishListEvent>(_onLoadWishList);
 
-    on<WishListLoadedEvent>((event, emit) {
-     emit(WishListLoadedState(wishList: event.wishList));
-    });
+    on<WishListLoadedEvent>(_onWishListLoaded);
 
-    on<ErrorEvent>((event, emit) {
-      emit(ErrorState(errorMessage: event.errorMessage));
-    });
+    on<ErrorEvent>(_onError);
 
-    on<CreateWishEvent>((event, emit) {
-      _createWishUseCase.run(const Wish(name: 'новое желание'));
-    });
+    on<CreateWishEvent>(_onCreateWishList);
 
     add(const LoadWishListEvent());
+  }
+
+  void _onLoadWishList(
+    LoadWishListEvent event,
+    Emitter<MainPageWishListState> emit,
+  ) {
+    final Stream<List<Wish>> streamWishList = _getWishListStreamUseCase.run();
+    _streamSubscription = streamWishList.listen((data) {
+      add(WishListLoadedEvent(wishList: data));
+    }, onError: (error) {
+      add(ErrorEvent(errorMessage: error.toString()));
+    });
+  }
+
+  void _onError(
+    ErrorEvent event,
+    Emitter<MainPageWishListState> emit,
+  ) {
+    emit(ErrorState(errorMessage: event.errorMessage));
+  }
+
+  void _onWishListLoaded(
+    WishListLoadedEvent event,
+    Emitter<MainPageWishListState> emit,
+  ) {
+    emit(WishListLoadedState(wishList: event.wishList));
+  }
+
+  void _onCreateWishList(
+    CreateWishEvent event,
+    Emitter<MainPageWishListState> emit,
+  ) {
+    _createWishUseCase.run(const Wish(name: 'новое желание'));
   }
 
   @override
