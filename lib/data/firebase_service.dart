@@ -5,18 +5,6 @@ class FirebaseService {
   late final FirebaseApp app;
   late final FirebaseFirestore firestore;
 
-  static FirebaseService? _instance;
-
-  FirebaseService._();
-
-  factory FirebaseService() {
-    if (_instance != null) {
-      return _instance!;
-    }
-    _instance = FirebaseService._();
-    return _instance!;
-  }
-
   Future<void> init() async{
 
     app = await Firebase.initializeApp(

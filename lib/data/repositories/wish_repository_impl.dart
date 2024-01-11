@@ -2,8 +2,7 @@ import 'package:wishlist/data/firebase_service.dart';
 import 'package:wishlist/domain/models/wish.dart';
 import 'package:wishlist/domain/repositories/wish_repository.dart';
 
-class WishRepositoryImpl implements WishRepository{
-
+class WishRepositoryImpl implements WishRepository {
   final FirebaseService firebaseService;
 
   const WishRepositoryImpl({required this.firebaseService});
@@ -20,7 +19,21 @@ class WishRepositoryImpl implements WishRepository{
 
   @override
   Future<void> replaceWish(Wish wish) {
-    return firebaseService.firestore.collection('wishes').doc(wish.uid).update(wish.toJson());
+    return firebaseService.firestore
+        .collection('wishes')
+        .doc(wish.uid)
+        .update(wish.toJson());
   }
-  
+
+  @override
+  Stream<List<Wish>> getWishListStream() {
+    return firebaseService.firestore
+        .collection('wishes')
+        .withConverter<Wish>(
+            fromFirestore: (snapshot, _) =>
+                Wish.fromJson(snapshot.data()!, snapshot.id),
+            toFirestore: (wish, _) => wish.toJson())
+        .snapshots()
+        .map((event) => event.docs.map((e) => e.data()).toList());
+  }
 }

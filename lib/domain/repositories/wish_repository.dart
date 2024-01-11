@@ -7,4 +7,6 @@ abstract class WishRepository {
 
   Future<void> deleteWish(String uid);
 
+  Stream<List<Wish>> getWishListStream();
+
 }
