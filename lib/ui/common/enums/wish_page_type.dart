@@ -1,0 +1,1 @@
+enum WishPageType{create, edit, view}
