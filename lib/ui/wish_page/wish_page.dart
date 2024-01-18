@@ -1,152 +1,79 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wishlist/di/di.dart';
 import 'package:wishlist/domain/models/wish.dart';
-import 'package:wishlist/ui/common/text_link.dart';
-import 'package:wishlist/ui/common/widget_with_title.dart';
+import 'package:wishlist/domain/usecases/create_wish_usecase.dart';
+import 'package:wishlist/ui/common/enums/wish_page_type.dart';
+import 'package:wishlist/ui/wish_page/app_bar/app_bar_create_mode.dart';
+import 'package:wishlist/ui/wish_page/app_bar/app_bar_edit_mode.dart';
+import 'package:wishlist/ui/wish_page/app_bar/app_bar_view_mode.dart';
+import 'package:wishlist/ui/wish_page/bloc/wish_page_bloc.dart';
+import 'package:wishlist/ui/wish_page/body/body_create_mode.dart';
+import 'package:wishlist/ui/wish_page/body/body_edit_mode.dart';
+import 'package:wishlist/ui/wish_page/body/body_view_mode.dart';
 
-class WishPage extends StatefulWidget {
-  const WishPage({super.key, required this.wish});
+class WishPage extends StatelessWidget {
+  const WishPage({super.key, this.wish, required this.wishPageType});
 
-  final Wish wish;
+  final Wish? wish;
+  final WishPageType wishPageType;
 
-  @override
-  State<WishPage> createState() => _WishPageState();
-}
+  AppBar _getAppBar(WishPageState state) {
+    if (state is ViewWishState) {
+      return AppBarViewMode();
+    } else if (state is EditWishState) {
+      return AppBarEditMode();
+    }
+    return AppBarCreateMode();
+  }
 
-Widget _drawImagesPageView(List<String> images) {
-  return (images.length > 1
-      ? PageView(
-          children: [for (String image in images) Image.network(image)],
-        )
-      : Image.network(images.first));
-}
-
-class _WishPageState extends State<WishPage> {
-  @override
-  void initState() {
-    super.initState();
+  Widget _getBody(WishPageState state) {
+    if (state is ViewWishState) {
+      return const BodyViewMode();
+    } else if (state is EditWishState) {
+      return const BodyEditMode();
+    }
+    return const BodyCreateMode();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Просмотр желания"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () => null,
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => null,
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              color: Colors.grey,
-              height: MediaQuery.of(context).size.width * 0.8,
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: widget.wish.images.isNotEmpty
-                    ? _drawImagesPageView(widget.wish.images)
-                    : Image.asset('assets/images/image_icon.png'),
-              ),
+    return BlocProvider<WishPageBloc>(
+      create: (context) => WishPageBloc(
+          createWishUseCase: DI.getit.get<CreateWishUseCase>(),
+          wishPageType: wishPageType,
+          initWish: wish),
+      child: Builder(
+        builder: (context) {
+          return BlocListener<WishPageBloc, WishPageState>(
+            listener: (context, state){
+              if(state is WishEditable && state.successSave){
+                Navigator.pop(context);
+              }
+            },
+            child: BlocBuilder<WishPageBloc, WishPageState>(
+              builder: (context, state) {
+                return Scaffold(
+                  appBar: _getAppBar(state),
+                  body: SingleChildScrollView(
+                    controller: BlocProvider.of<WishPageBloc>(context).scrollController,
+                    child: _getBody(state),
+                  ),
+                  floatingActionButton: (state is ViewWishState)
+                      ? FloatingActionButton(
+                    onPressed: () => null,
+                    tooltip: 'Желание исполнено',
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    child: const Icon(Icons.done_rounded),
+                  )
+                      : const SizedBox(), //// This trailing comma makes auto-formatting nicer for build methods.
+                );
+              },
             ),
-            WidgetWithTitle(
-                child: Text(widget.wish.name,
-                    style: const TextStyle(fontSize: 16))),
-            widget.wish.description.isNotEmpty
-                ? WidgetWithTitle(
-                    title: 'Описание',
-                    child: Text(widget.wish.description,
-                        style: const TextStyle(fontSize: 16)),
-                  )
-                : const SizedBox(),
-            widget.wish.urls.isNotEmpty
-                ? WidgetWithTitle(
-                    title: 'Ссылки',
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final item in widget.wish.urls)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                      child: TextLink(text: item, url: item)),
-                                  GestureDetector(
-                                      onTap: () async {
-                                        await Clipboard.setData(
-                                                ClipboardData(text: item))
-                                            .then((_) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                                  content: Text(
-                                                      "Ссылка скопирована")));
-                                        });
-                                      },
-                                      child: const Icon(
-                                        Icons.copy,
-                                        color: Colors.black54,
-                                        size: 20,
-                                      ))
-                                ],
-                              ),
-                              const Divider(
-                                  height: 12,
-                                  thickness: 1,
-                                  color: Colors.black12),
-                            ],
-                          )
-                      ],
-                    ),
-                  )
-                : const SizedBox(),
-            widget.wish.price != null
-                ? WidgetWithTitle(
-                    title: 'Цена',
-                    child: Row(
-                      children: [
-                        widget.wish.price!.$2 != null
-                            ? const Text(
-                                'от ',
-                                style: TextStyle(color: Colors.black54),
-                              )
-                            : const SizedBox(),
-                        Text('${widget.wish.price!.$1}'),
-                        const SizedBox(width: 32),
-                        widget.wish.price!.$2 != null
-                            ? const Text(
-                                'до ',
-                                style: TextStyle(color: Colors.black54),
-                              )
-                            : const SizedBox(),
-                        widget.wish.price!.$2 != null
-                            ? Text('${widget.wish.price!.$2}')
-                            : const SizedBox(),
-                      ],
-                    ))
-                : const SizedBox(),
-            const SizedBox(height: 24)
-          ],
-        ),
+          );
+        },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => null,
-        tooltip: 'Желание исполнено',
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.done_rounded),
-      ), //// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

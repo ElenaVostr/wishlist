@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wishlist/di/di.dart';
 import 'package:wishlist/domain/usecases/create_wish_usecase.dart';
 import 'package:wishlist/domain/usecases/get_wish_list_stream_usecase.dart';
+import 'package:wishlist/ui/common/enums/wish_page_type.dart';
 import 'package:wishlist/ui/wish_page/wish_page.dart';
 
 import 'bloc/main_page_wish_list_bloc.dart';
@@ -56,7 +57,7 @@ class MainPageWishList extends StatelessWidget {
                                     onTap: () => Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (BuildContext context) {
-                                              return WishPage(wish: e);
+                                              return WishPage(wish: e, wishPageType: WishPageType.view);
                                             })),
                                   ))
                                       .toList()))
@@ -68,7 +69,12 @@ class MainPageWishList extends StatelessWidget {
                   }
                 }),
             floatingActionButton: FloatingActionButton(
-              onPressed: () => BlocProvider.of<MainPageWishListBloc>(context).add(const CreateWishEvent()),
+              //onPressed: () => BlocProvider.of<MainPageWishListBloc>(context).add(const CreateWishEvent()),
+              onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return const WishPage(wishPageType: WishPageType.create);
+                      })),
               tooltip: 'Increment',
               child: const Icon(Icons.add),
             ),
