@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wishlist/domain/models/wish.dart';
+import 'package:wishlist/ui/common/images_picker/image_picker_screen.dart';
 import 'package:wishlist/ui/common/widget_with_title.dart';
 import 'package:wishlist/ui/wish_page/bloc/wish_page_bloc.dart';
 import 'package:wishlist/ui/wish_page/common/enums/price_indication_mode.dart';
@@ -37,7 +38,11 @@ class BodyCreateMode extends StatelessWidget {
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.camera_enhance),
-                      onPressed: () => null,
+                      onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return const ImagePickerScreen();
+                              })),
                     ),
                   ),
                 ),
