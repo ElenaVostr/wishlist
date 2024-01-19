@@ -9,14 +9,17 @@ class ImagePickerScreenCubit extends Cubit<ImagePickerScreenState> {
 
   ImagePickerScreenCubit() : super(const ImagesLoadedState(imagesList: []));
 
+  /// Открыть галерею
   void openGallery() {
     _getImagesFromGallery();
   }
 
+  /// Открыть камеру
   void openCamera() {
     _getImageFromCamera();
   }
 
+  /// Удалить изображение
   void deleteImage(int index) {
     List<XFile> images = List.from((state as ImagesLoadedState).imagesList);
     images.removeAt(index);

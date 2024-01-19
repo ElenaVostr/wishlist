@@ -48,18 +48,6 @@ class ImagePickerScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    // Expanded(
-                    //     child: GridView.count(
-                    //   crossAxisCount: 3,
-                    //   children: List.generate(state.imagesList.length, (index) {
-                    //     return Center(
-                    //       child: Image.file(
-                    //         File(state.imagesList[index].path),
-                    //         fit: BoxFit.cover,
-                    //       ),
-                    //     );
-                    //   }),
-                    // )),
                     Expanded(
                       child: GridView.builder(
                         gridDelegate:
