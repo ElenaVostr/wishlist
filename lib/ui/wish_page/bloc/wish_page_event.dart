@@ -89,7 +89,7 @@ class CheckPriceIndicationModeEvent extends WishPageEvent {
 
 /// Добавить выбранные изображения
 class AddImagesEvent extends WishPageEvent {
-  final List<File> images;
+  final List<Link> images;
   const AddImagesEvent({required this.images});
 
   @override

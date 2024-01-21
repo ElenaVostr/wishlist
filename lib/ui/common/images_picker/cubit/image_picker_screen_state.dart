@@ -5,11 +5,11 @@ abstract class ImagePickerScreenState extends Equatable {
 }
 
 class ImagesLoadedState extends ImagePickerScreenState {
-  final List<File> imagesList;
+  final List<String> imagesList;
 
   const ImagesLoadedState({required this.imagesList});
 
-  ImagesLoadedState copyWith({List<File>? imagesList}) {
+  ImagesLoadedState copyWith({List<String>? imagesList}) {
     return ImagesLoadedState(
         imagesList: imagesList ?? this.imagesList);
   }

@@ -6,6 +6,7 @@ import 'package:wishlist/di/di.dart';
 import 'package:wishlist/domain/usecases/create_wish_usecase.dart';
 import 'package:wishlist/domain/usecases/get_wish_list_stream_usecase.dart';
 import 'package:wishlist/ui/common/enums/wish_page_type.dart';
+import 'package:wishlist/ui/common/image_from_path.dart';
 import 'package:wishlist/ui/wish_page/wish_page.dart';
 
 import 'bloc/main_page_wish_list_bloc.dart';
@@ -62,26 +63,18 @@ class MainPageWishList extends StatelessWidget {
                             child: Card(
                               elevation: 8,
                               child: Column(
+                                mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Expanded(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: (state.wishList[index]
-                                                          .imagePreview !=
-                                                      null
-                                                  ? MemoryImage(
-                                                      Uint8List.fromList(
-                                                          state
-                                                              .wishList[index]
-                                                              .imagePreview!
-                                                              .codeUnits))
-                                                  : const AssetImage(
-                                                      'assets/images/image_icon.png'))
-                                              as ImageProvider,
-                                        ),
-                                      ),
+                                    child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: state
+                                        .wishList[index].images.isNotEmpty
+                                        ? ImageFromPath(
+                                        path: state
+                                            .wishList[index].images.first, fit: BoxFit.cover, width: double.maxFinite,)
+                                        : Image.asset(
+                                      'assets/images/image_icon.png', fit: BoxFit.cover, width: double.maxFinite,),
                                     ),
                                   ),
                                   SizedBox(
@@ -91,7 +84,8 @@ class MainPageWishList extends StatelessWidget {
                                         state.wishList[index].name,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(fontSize: 12, height: 0.8),
+                                        style: const TextStyle(
+                                            fontSize: 12, height: 0.8),
                                       ),
                                     ),
                                   ),

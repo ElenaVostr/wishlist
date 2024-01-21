@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wishlist/ui/common/image_from_path.dart';
 import 'package:wishlist/ui/common/images_picker/cubit/image_picker_screen_cubit.dart';
 
 class ImagePickerScreen extends StatelessWidget {
-  final List<File> images;
+  final List<String> images;
 
   const ImagePickerScreen({super.key, this.images = const []});
 
@@ -67,13 +68,7 @@ class ImagePickerScreen extends StatelessWidget {
                           return Stack(
                             children: [
                               Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: FileImage(
-                                        state.imagesList[index]),
-                                  ),
-                                ),
+                                child: ImageFromPath(path: state.imagesList[index], fit: BoxFit.cover, width: double.maxFinite,),
                               ),
                               Positioned(
                                 right: 4,

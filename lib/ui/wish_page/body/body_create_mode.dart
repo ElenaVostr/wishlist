@@ -45,7 +45,7 @@ class BodyCreateMode extends StatelessWidget {
                             MaterialPageRoute(builder: (BuildContext context) {
                               return ImagePickerScreen(images: state.images);
                             }));
-                        if(result is List<File>){
+                        if(result is List<Link>){
                           wishPageBloc.add(AddImagesEvent(images: result));
                         }
                       },

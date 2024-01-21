@@ -111,17 +111,17 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
         price = (price1, price2);
       }
 
-      String? imagePreviewStr;
-      final Uint8List? imagePreviewResponse =
-      await FlutterImageCompress.compressWithFile(
-        currentState.images.first.path,
-        quality: 15,
-      );
-      print(imagePreviewResponse);
-      if (imagePreviewResponse != null) {
-        //imagePreviewStr = utf8.decode(imagePreviewResponse, allowMalformed: true);
-        imagePreviewStr = String.fromCharCodes(imagePreviewResponse);
-      }
+      // String? imagePreviewStr;
+      // final Uint8List? imagePreviewResponse =
+      // await FlutterImageCompress.compressWithFile(
+      //   currentState.images.first.path,
+      //   quality: 15,
+      // );
+      // print(imagePreviewResponse);
+      // if (imagePreviewResponse != null) {
+      //   //imagePreviewStr = utf8.decode(imagePreviewResponse, allowMalformed: true);
+      //   imagePreviewStr = String.fromCharCodes(imagePreviewResponse);
+      // }
 
       _createWishUseCase.run(Wish(
           name: name,
@@ -129,7 +129,7 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
           status: WishStatus.undone,
           urls: currentState.urls,
           images: currentState.images,
-          imagePreview: imagePreviewStr,
+          imagePreview: null,
           price: price));
 
       emit(currentState.copyWith(successSave: true));

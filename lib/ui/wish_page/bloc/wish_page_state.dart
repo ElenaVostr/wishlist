@@ -13,7 +13,7 @@ abstract class WishEditable extends WishPageState {
 
   List<Link> get urls;
 
-  List<File> get images;
+  List<Link> get images;
 
   String get listWishUid;
 
@@ -32,7 +32,7 @@ abstract class WishEditable extends WishPageState {
   WishPageState copyWith(
       {String? name,
       String? description,
-      List<File>? images,
+      List<Link>? images,
       List<Link>? urls,
       String? listWishUid,
       double? price1,
@@ -121,7 +121,7 @@ class EditWishState extends ViewWishState implements WishEditable {
   EditWishState copyWith(
       {String? name,
       String? description,
-      List<File>? images,
+      List<Link>? images,
       List<Link>? urls,
         String? listWishUid,
       double? price1,
@@ -153,7 +153,7 @@ class EditWishState extends ViewWishState implements WishEditable {
   final String description;
 
   @override
-  final List<File> images;
+  final List<Link> images;
 
   @override
   final List<Link> urls;
@@ -199,7 +199,7 @@ class CreateWishState extends WishPageState implements WishEditable {
     return const CreateWishState(
         name: '',
         description: '',
-        images: <File>[],
+        images: <Link>[],
         //urls: <Link>[],
         urls: <Link>[
           'https://ozon.ru/t/8VqAa8z',
@@ -217,7 +217,7 @@ class CreateWishState extends WishPageState implements WishEditable {
   CreateWishState copyWith(
       {String? name,
       String? description,
-      List<File>? images,
+      List<Link>? images,
       List<Link>? urls,
         String? listWishUid,
       double? price1,
@@ -263,7 +263,7 @@ class CreateWishState extends WishPageState implements WishEditable {
   final String description;
 
   @override
-  final List<File> images;
+  final List<Link> images;
 
   @override
   final List<Link> urls;

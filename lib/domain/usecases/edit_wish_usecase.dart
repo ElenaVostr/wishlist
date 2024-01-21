@@ -16,7 +16,7 @@ class EditWishUseCase {
     String? description,
     WishStatus? status,
     List<Link>? urls,
-    List<File>? images,
+    List<Link>? images,
     String? imagePreview,
     String? list,
     (double, double?)? price,

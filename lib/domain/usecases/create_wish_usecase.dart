@@ -1,4 +1,3 @@
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:wishlist/domain/models/wish.dart';
 import 'package:wishlist/domain/repositories/wish_repository.dart';
 

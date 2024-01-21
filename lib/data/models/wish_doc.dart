@@ -2,7 +2,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:wishlist/common/utils/json_ext.dart';
 import 'package:wishlist/domain/enums/wish_status.dart';
 import 'package:wishlist/domain/models/wish.dart';
-import 'package:path/path.dart' show basenameWithoutExtension;
 
 /// Модель желания для чтения и записи в Firestore
 class WishDoc {
@@ -10,7 +9,7 @@ class WishDoc {
   final String? description;
   final String? status;
   final List<String>? urls;
-  final List<Reference>? images;
+  final List<String>? images;
   final String? imagePreview;
   final String? list;
   final List<num>? price;
@@ -33,7 +32,7 @@ class WishDoc {
       status: JsonExt.getString(json['status']),
       urls: JsonExt.getNullList<String>(json['urls'], converter: (e) => e),
       images:
-          JsonExt.getNullList<Reference>(json['images'], converter: (e) => e),
+          JsonExt.getNullList<String>(json['images'], converter: (e) => e),
       imagePreview: JsonExt.getString(json['image_preview']),
       list: JsonExt.getString(json['list']),
       price: JsonExt.getNullList<num>(json['price'], converter: (e) => e),
@@ -59,10 +58,7 @@ class WishDoc {
       description: wish.description,
       status: wish.status.name,
       urls: wish.urls,
-      images: JsonExt.getList<Reference>(wish.images,
-          converter: (e) => storage
-              .ref('images/$uid')
-              .child(basenameWithoutExtension(e.path))),
+      images: wish.images,
       imagePreview: wish.imagePreview,
       list: wish.list,
       price: wish.price != null
@@ -98,7 +94,7 @@ class WishDoc {
             JsonExt.getEnum<WishStatus>(status, values: WishStatus.values) ??
                 WishStatus.undone,
         urls: urls ?? [],
-        images: [],
+        images: images ?? [],
         imagePreview: imagePreview,
         list: list ?? '',
         price: JsonExt.getPairedDouble(price));
