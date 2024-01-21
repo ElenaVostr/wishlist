@@ -115,4 +115,15 @@ abstract final class JsonExt {
       return <T>[];
     }
   }
+
+  static List<T>? getNullList<T>(dynamic value,
+      {required T Function(dynamic e) converter}) {
+    if (value is List) {
+      return value.map((e) => converter(e)).toList();
+    } else if (value is Map) {
+      return value.values.map((e) => converter(e)).toList();
+    } else {
+      return null;
+    }
+  }
 }
