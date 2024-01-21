@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:wishlist/domain/enums/wish_status.dart';
 import 'package:wishlist/domain/models/wish.dart';
 import 'package:wishlist/domain/usecases/create_wish_usecase.dart';
@@ -73,29 +78,49 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
     on<RemoveLinkEvent>(_onRemoveLink);
     on<EditLinkEvent>(_onEditLink);
     on<CheckPriceIndicationModeEvent>(_onCheckPriceIndicationMode);
+    on<AddImagesEvent>(_onAddImages);
   }
 
   void _onSaveNewWish(
     SaveNewWishEvent event,
     Emitter<WishPageState> emit,
-  ) {
+  ) async {
     WishEditable currentState = state as WishEditable;
 
     String name = fieldNameController?.text ?? '';
     String description = fieldDescriptionController?.text ?? '';
 
-    if(name.isEmpty){
-      emit(currentState.copyWith(error: (true, 'Название желания - обязательное поле')));
+    if (name.isEmpty) {
+      emit(currentState
+          .copyWith(error: (true, 'Название желания - обязательное поле')));
     } else {
       (double, double?)? price;
       if (currentState.priceIndicationMode == PriceIndicationMode.onePrice) {
-        double price1 = price1Controller != null ? double.parse(price1Controller!.text) : 0.0;
+        double price1 = price1Controller != null
+            ? double.parse(price1Controller!.text)
+            : 0.0;
         price = (price1, null);
       } else if (currentState.priceIndicationMode ==
           PriceIndicationMode.priceRange) {
-        double price1 = price1Controller != null ? double.parse(price1Controller!.text) : 0.0;
-        double price2 = price2Controller != null ? double.parse(price2Controller!.text) : 0.0;
+        double price1 = price1Controller != null
+            ? double.parse(price1Controller!.text)
+            : 0.0;
+        double price2 = price2Controller != null
+            ? double.parse(price2Controller!.text)
+            : 0.0;
         price = (price1, price2);
+      }
+
+      String? imagePreviewStr;
+      final Uint8List? imagePreviewResponse =
+      await FlutterImageCompress.compressWithFile(
+        currentState.images.first.path,
+        quality: 15,
+      );
+      print(imagePreviewResponse);
+      if (imagePreviewResponse != null) {
+        //imagePreviewStr = utf8.decode(imagePreviewResponse, allowMalformed: true);
+        imagePreviewStr = String.fromCharCodes(imagePreviewResponse);
       }
 
       _createWishUseCase.run(Wish(
@@ -104,6 +129,7 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
           status: WishStatus.undone,
           urls: currentState.urls,
           images: currentState.images,
+          imagePreview: imagePreviewStr,
           price: price));
 
       emit(currentState.copyWith(successSave: true));
@@ -170,6 +196,13 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
         scrollController?.jumpTo(scrollController!.offset + 84);
       }
     }
+  }
+
+  void _onAddImages(
+    AddImagesEvent event,
+    Emitter<WishPageState> emit,
+  ) {
+    emit((state as WishEditable).copyWith(images: event.images));
   }
 
   @override

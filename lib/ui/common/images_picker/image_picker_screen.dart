@@ -5,14 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wishlist/ui/common/images_picker/cubit/image_picker_screen_cubit.dart';
 
 class ImagePickerScreen extends StatelessWidget {
-  final List<String> images;
+  final List<File> images;
 
   const ImagePickerScreen({super.key, this.images = const []});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ImagePickerScreenCubit>(
-      create: (context) => ImagePickerScreenCubit(),
+      create: (context) => ImagePickerScreenCubit(initImages: images),
       child: Builder(
         builder: (context) {
           return BlocBuilder<ImagePickerScreenCubit, ImagePickerScreenState>(
@@ -22,6 +22,12 @@ class ImagePickerScreen extends StatelessWidget {
                   centerTitle: true,
                   title: Text(
                       'Выбранные изображения ${(state as ImagesLoadedState).imagesList.length}'),
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context, state.imagesList);
+                    },
+                  ),
                 ),
                 body: Column(
                   children: [
@@ -65,7 +71,7 @@ class ImagePickerScreen extends StatelessWidget {
                                   image: DecorationImage(
                                     fit: BoxFit.cover,
                                     image: FileImage(
-                                        File(state.imagesList[index].path)),
+                                        state.imagesList[index]),
                                   ),
                                 ),
                               ),

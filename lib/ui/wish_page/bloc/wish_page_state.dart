@@ -13,9 +13,9 @@ abstract class WishEditable extends WishPageState {
 
   List<Link> get urls;
 
-  List<Link> get images;
+  List<File> get images;
 
-  Id get listWishUid;
+  String get listWishUid;
 
   double get price1;
 
@@ -32,9 +32,9 @@ abstract class WishEditable extends WishPageState {
   WishPageState copyWith(
       {String? name,
       String? description,
-      List<Link>? images,
+      List<File>? images,
       List<Link>? urls,
-      Id? listWishUid,
+      String? listWishUid,
       double? price1,
       double? price2,
       PriceIndicationMode? priceIndicationMode,
@@ -95,7 +95,7 @@ class EditWishState extends ViewWishState implements WishEditable {
         description: wish.description,
         images: wish.images,
         urls: wish.urls,
-        listWishUid: wish.lists.isNotEmpty ? wish.lists.first : 0,
+        listWishUid: '',
         price1: initPrice1,
         price2: initPrice2,
         priceIndicationMode: initPriceIndicationMode);
@@ -121,9 +121,9 @@ class EditWishState extends ViewWishState implements WishEditable {
   EditWishState copyWith(
       {String? name,
       String? description,
-      List<Link>? images,
+      List<File>? images,
       List<Link>? urls,
-      Id? listWishUid,
+        String? listWishUid,
       double? price1,
       double? price2,
       PriceIndicationMode? priceIndicationMode,
@@ -153,13 +153,13 @@ class EditWishState extends ViewWishState implements WishEditable {
   final String description;
 
   @override
-  final List<Link> images;
+  final List<File> images;
 
   @override
   final List<Link> urls;
 
   @override
-  final Id listWishUid;
+  final String listWishUid;
 
   @override
   final double price1;
@@ -199,14 +199,14 @@ class CreateWishState extends WishPageState implements WishEditable {
     return const CreateWishState(
         name: '',
         description: '',
-        images: <Link>[],
+        images: <File>[],
         //urls: <Link>[],
         urls: <Link>[
           'https://ozon.ru/t/8VqAa8z',
           'https://ozon.ru/t/56jytjk6',
           'https://www.wildberries.ru/catalog/190211514/detail.aspx?targetUrl=SN'
         ],
-        listWishUid: 0,
+        listWishUid: '',
         price1: 0,
         price2: 0,
         priceIndicationMode: PriceIndicationMode.priceNotSpecified,
@@ -217,9 +217,9 @@ class CreateWishState extends WishPageState implements WishEditable {
   CreateWishState copyWith(
       {String? name,
       String? description,
-      List<Link>? images,
+      List<File>? images,
       List<Link>? urls,
-      Id? listWishUid,
+        String? listWishUid,
       double? price1,
       double? price2,
       PriceIndicationMode? priceIndicationMode,
@@ -263,13 +263,13 @@ class CreateWishState extends WishPageState implements WishEditable {
   final String description;
 
   @override
-  final List<Link> images;
+  final List<File> images;
 
   @override
   final List<Link> urls;
 
   @override
-  final Id listWishUid;
+  final String listWishUid;
 
   @override
   final double price1;

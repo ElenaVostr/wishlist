@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wishlist/domain/models/wish.dart';
@@ -38,11 +40,15 @@ class BodyCreateMode extends StatelessWidget {
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.camera_enhance),
-                      onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return const ImagePickerScreen();
-                              })),
+                      onPressed: () async {
+                        final result = await Navigator.push(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                              return ImagePickerScreen(images: state.images);
+                            }));
+                        if(result is List<File>){
+                          wishPageBloc.add(AddImagesEvent(images: result));
+                        }
+                      },
                     ),
                   ),
                 ),
@@ -119,18 +125,32 @@ class BodyCreateMode extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 state.priceIndicationMode == PriceIndicationMode.onePrice
-                    ? PriceTextFormField(controller: wishPageBloc.price1Controller, hintText: 'Укажите цену товара',)
-                    : (state.priceIndicationMode == PriceIndicationMode.priceRange
-                    ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('от', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                    PriceTextFormField(controller: wishPageBloc.price1Controller, hintText: 'Укажите минимальную цену',),
-                    const Text('до', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                    PriceTextFormField(controller: wishPageBloc.price2Controller, hintText: 'Укажите максимальную цену',)
-                  ],
-                )
-                    : const SizedBox())
+                    ? PriceTextFormField(
+                        controller: wishPageBloc.price1Controller,
+                        hintText: 'Укажите цену товара',
+                      )
+                    : (state.priceIndicationMode ==
+                            PriceIndicationMode.priceRange
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('от',
+                                  style: TextStyle(
+                                      fontSize: 11, color: Colors.grey)),
+                              PriceTextFormField(
+                                controller: wishPageBloc.price1Controller,
+                                hintText: 'Укажите минимальную цену',
+                              ),
+                              const Text('до',
+                                  style: TextStyle(
+                                      fontSize: 11, color: Colors.grey)),
+                              PriceTextFormField(
+                                controller: wishPageBloc.price2Controller,
+                                hintText: 'Укажите максимальную цену',
+                              )
+                            ],
+                          )
+                        : const SizedBox())
               ],
             ),
           ),
@@ -139,10 +159,15 @@ class BodyCreateMode extends StatelessWidget {
             child: ElevatedButton(
                 onPressed: () => wishPageBloc.add(const SaveNewWishEvent()),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.amberAccent),
-                  fixedSize: MaterialStateProperty.all<Size>(const Size(double.infinity, 50)),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.amberAccent),
+                  fixedSize: MaterialStateProperty.all<Size>(
+                      const Size(double.infinity, 50)),
                 ),
-                child: const Text('Сохранить желание', style: TextStyle(fontSize: 16),)),
+                child: const Text(
+                  'Сохранить желание',
+                  style: TextStyle(fontSize: 16),
+                )),
           ),
           const SizedBox(height: 4),
         ],
@@ -279,13 +304,14 @@ class CheckButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: isCheck ? Colors.amberAccent : Colors.black12,
           border: Border.all(
-            color: Colors.grey,
-            style: BorderStyle.solid,
-            width: 0.5
-          ),
+              color: Colors.grey, style: BorderStyle.solid, width: 0.5),
         ),
         child: Center(
-          child: Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 11),),
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 11),
+          ),
         ),
       ),
     );
@@ -295,6 +321,7 @@ class CheckButton extends StatelessWidget {
 class PriceTextFormField extends StatelessWidget {
   final TextEditingController? controller;
   final String? hintText;
+
   const PriceTextFormField(
       {super.key, required this.controller, this.hintText});
 
@@ -306,8 +333,8 @@ class PriceTextFormField extends StatelessWidget {
       //inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       decoration: InputDecoration(
         filled: true,
-        contentPadding: const EdgeInsets.symmetric(
-            vertical: 10.0, horizontal: 16.0),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
         hintText: hintText,
         fillColor: Colors.black12,
         border: OutlineInputBorder(

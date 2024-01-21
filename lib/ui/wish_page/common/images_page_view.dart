@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 ///Виджет возвращает иконку, если список изображение пустой. Если список содержит одно изображение, то его и отображает, а если список больше единицы, то рисует виджет с прокруткой изображение влево или вправо
 class ImagesPageView extends StatelessWidget {
-  final List<String> images;
+  final List<File> images;
 
   const ImagesPageView({super.key, required this.images});
 
@@ -17,9 +19,9 @@ class ImagesPageView extends StatelessWidget {
             ? Image.asset('assets/images/image_icon.png')
             : (images.length > 1
             ? PageView(
-          children: [for (String image in images) Image.network(image)],
+          children: [for (File image in images) Image.file(image)],
         )
-            : Image.network(images.first)),
+            : Image.file(images.first)),
       ),
     );
   }

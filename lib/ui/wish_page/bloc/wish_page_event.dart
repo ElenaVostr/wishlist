@@ -86,3 +86,12 @@ class CheckPriceIndicationModeEvent extends WishPageEvent {
   @override
   List<Object?> get props => [mode];
 }
+
+/// Добавить выбранные изображения
+class AddImagesEvent extends WishPageEvent {
+  final List<File> images;
+  const AddImagesEvent({required this.images});
+
+  @override
+  List<Object?> get props => [images];
+}
