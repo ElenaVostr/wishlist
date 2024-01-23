@@ -54,7 +54,6 @@ class WishRepositoryImpl implements WishRepository {
   }
 
   Future<void> deleteImageFromStorage(String uid, String fileName) {
-    print('deleteImageFromStorage fileName = $fileName');
     return firebaseService.storage.ref('images/$uid/$fileName').delete();
   }
 

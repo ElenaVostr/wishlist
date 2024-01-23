@@ -22,7 +22,7 @@ class WishPage extends StatelessWidget {
 
   AppBar _getAppBar(WishPageState state, BuildContext context) {
     if (state is ViewWishState) {
-      return AppBarViewMode(context: context, initWish: wish);
+      return AppBarViewMode(context: context);
     } else if (state is EditWishState) {
       return AppBarEditMode();
     }
