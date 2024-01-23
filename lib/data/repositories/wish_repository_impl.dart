@@ -61,4 +61,11 @@ class WishRepositoryImpl implements WishRepository {
       return null;
     }
   }
+
+  @override
+  Stream<Wish> getWishByUid(String uid) {
+    return firebaseService.firestore.collection('wishes').doc(uid).snapshots().map((snapshot) {
+      return WishDoc.fromJson(snapshot.data()!).toWish(uid);
+    });
+  }
 }

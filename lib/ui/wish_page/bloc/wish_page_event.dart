@@ -28,20 +28,21 @@ class EnableEditModeEvent extends WishPageEvent {
   List<Object?> get props => [];
 }
 
-/// Событие сохранения нового желания
-class SaveNewWishEvent extends WishPageEvent {
-  const SaveNewWishEvent();
+/// Подтверждаем обновление или сохранение нового желания
+class SaveWishEvent extends WishPageEvent {
+  const SaveWishEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-/// Подтверждаем обновление желания
-class UpdateWishEvent extends WishPageEvent {
-  const UpdateWishEvent();
+/// Обновить поля желания
+class UpdateWishFieldsEvent extends WishPageEvent {
+  final Wish wish;
+  const UpdateWishFieldsEvent({required this.wish});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [wish];
 }
 
 /// Нажали на кнопку "Добавить новую ссылку": добавляет пустое поле для ввода новой ссылки

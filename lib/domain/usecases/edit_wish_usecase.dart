@@ -17,7 +17,6 @@ class EditWishUseCase {
     WishStatus? status,
     List<Link>? urls,
     List<Link>? images,
-    String? imagePreview,
     String? list,
     (double, double?)? price,
     bool resetPrice = false,
@@ -29,7 +28,6 @@ class EditWishUseCase {
       status: status ?? oldWish.status,
       urls: urls ?? oldWish.urls,
       images: images ?? oldWish.images,
-      imagePreview: imagePreview == null && images == null ? oldWish.imagePreview : imagePreview,
       list: list ?? oldWish.list,
       price: price ?? (resetPrice ? null : oldWish.price),
     ));

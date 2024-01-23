@@ -67,9 +67,7 @@ class ImagePickerScreen extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return Stack(
                             children: [
-                              Container(
-                                child: ImageFromPath(path: state.imagesList[index], fit: BoxFit.cover, width: double.maxFinite,),
-                              ),
+                              ImageFromPath(path: state.imagesList[index], fit: BoxFit.cover, width: double.maxFinite,),
                               Positioned(
                                 right: 4,
                                 top: 4,

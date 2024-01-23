@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:wishlist/domain/enums/wish_status.dart';
 
 typedef Id = int;
@@ -13,7 +11,6 @@ class Wish {
   final WishStatus status;
   final List<Link> urls;
   final List<Link> images;
-  final String? imagePreview;
   final String list;
   final (double, double?)? price;
 
@@ -24,7 +21,6 @@ class Wish {
     this.status = WishStatus.undone,
     this.urls = const <Link>[],
     this.images = const <Link>[],
-    this.imagePreview,
     this.list = '',
     this.price,
   });

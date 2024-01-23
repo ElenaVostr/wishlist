@@ -10,7 +10,6 @@ class WishDoc {
   final String? status;
   final List<String>? urls;
   final List<String>? images;
-  final String? imagePreview;
   final String? list;
   final List<num>? price;
 
@@ -20,7 +19,6 @@ class WishDoc {
     this.status,
     this.urls,
     this.images,
-    this.imagePreview,
     this.list,
     this.price,
   });
@@ -33,7 +31,6 @@ class WishDoc {
       urls: JsonExt.getNullList<String>(json['urls'], converter: (e) => e),
       images:
           JsonExt.getNullList<String>(json['images'], converter: (e) => e),
-      imagePreview: JsonExt.getString(json['image_preview']),
       list: JsonExt.getString(json['list']),
       price: JsonExt.getNullList<num>(json['price'], converter: (e) => e),
     );
@@ -46,7 +43,6 @@ class WishDoc {
       'status': status,
       'urls': urls,
       'images': images,
-      'image_preview': imagePreview,
       'list': list,
       'price': price,
     };
@@ -59,7 +55,6 @@ class WishDoc {
       status: wish.status.name,
       urls: wish.urls,
       images: wish.images,
-      imagePreview: wish.imagePreview,
       list: wish.list,
       price: wish.price != null
           ? (wish.price!.$2 != null
@@ -76,7 +71,6 @@ class WishDoc {
       status: wish.status.name,
       urls: wish.urls,
       list: wish.list,
-      imagePreview: wish.imagePreview,
       price: wish.price != null
           ? (wish.price!.$2 != null
               ? [wish.price!.$1, wish.price!.$2!]
@@ -95,7 +89,6 @@ class WishDoc {
                 WishStatus.undone,
         urls: urls ?? [],
         images: images ?? [],
-        imagePreview: imagePreview,
         list: list ?? '',
         price: JsonExt.getPairedDouble(price));
   }

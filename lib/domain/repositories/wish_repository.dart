@@ -9,4 +9,6 @@ abstract class WishRepository {
 
   Stream<List<Wish>> getWishListStream();
 
+  Stream<Wish> getWishByUid(String uid);
+
 }
