@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wishlist/domain/enums/wish_status.dart';
 import 'package:wishlist/domain/models/wish.dart';
 import 'package:wishlist/domain/usecases/create_wish_usecase.dart';
+import 'package:wishlist/domain/usecases/delete_wish_usecase.dart';
 import 'package:wishlist/domain/usecases/edit_wish_usecase.dart';
 import 'package:wishlist/domain/usecases/get_wish_by_uid_usecase.dart';
 import 'package:wishlist/ui/common/enums/wish_page_type.dart';
@@ -20,6 +21,7 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
   final CreateWishUseCase _createWishUseCase;
   final EditWishUseCase _editWishUseCase;
   final GetWishByUidUseCase _getWishByUidUseCase;
+  final DeleteWishUseCase _deleteWishUseCase;
   TextEditingController? fieldNameController;
   TextEditingController? fieldDescriptionController;
   TextEditingController? fieldLinkController;
@@ -33,11 +35,13 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
       {required CreateWishUseCase createWishUseCase,
       required EditWishUseCase editWishUseCase,
         required GetWishByUidUseCase getWishByUidUseCase,
+        required DeleteWishUseCase deleteWishUseCase,
       required WishPageType wishPageType,
       required Wish? initWish})
       : _createWishUseCase = createWishUseCase,
         _editWishUseCase = editWishUseCase,
   _getWishByUidUseCase = getWishByUidUseCase,
+        _deleteWishUseCase = deleteWishUseCase,
         super(_getInitialState(wishPageType, initWish)) {
     _init(wishPageType: wishPageType, initWish: initWish);
   }
@@ -95,6 +99,17 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
     on<EditLinkEvent>(_onEditLink);
     on<CheckPriceIndicationModeEvent>(_onCheckPriceIndicationMode);
     on<AddImagesEvent>(_onAddImages);
+    on<DeleteWishEvent>(_onDeleteWish);
+  }
+
+  void _onDeleteWish(
+      DeleteWishEvent event,
+      Emitter<WishPageState> emit,
+      ) {
+    if(state is ViewWishState && (state as ViewWishState).wish != null){
+      _deleteWishUseCase.run(((state as ViewWishState).wish!.uid!));
+      emit(const ViewWishState(wish: null, isWishDeleted: true));
+    }
   }
 
   void _onUpdateWishFields(

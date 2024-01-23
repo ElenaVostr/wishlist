@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wishlist/di/di.dart';
 import 'package:wishlist/domain/models/wish.dart';
 import 'package:wishlist/domain/usecases/create_wish_usecase.dart';
+import 'package:wishlist/domain/usecases/delete_wish_usecase.dart';
 import 'package:wishlist/domain/usecases/edit_wish_usecase.dart';
 import 'package:wishlist/domain/usecases/get_wish_by_uid_usecase.dart';
 import 'package:wishlist/ui/common/enums/wish_page_type.dart';
@@ -42,13 +43,14 @@ class WishPage extends StatelessWidget {
           createWishUseCase: DI.getit.get<CreateWishUseCase>(),
           editWishUseCase: DI.getit.get<EditWishUseCase>(),
           getWishByUidUseCase: DI.getit.get<GetWishByUidUseCase>(),
+          deleteWishUseCase: DI.getit.get<DeleteWishUseCase>(),
           wishPageType: wishPageType,
           initWish: wish),
       child: Builder(
         builder: (context) {
           return BlocListener<WishPageBloc, WishPageState>(
             listener: (context, state){
-              if(state is WishEditable && state.successSave){
+              if((state is WishEditable && state.successSave) || (state is ViewWishState && state.isWishDeleted)){
                 Navigator.pop(context);
               }
             },

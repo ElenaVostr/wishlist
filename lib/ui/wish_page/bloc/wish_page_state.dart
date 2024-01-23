@@ -35,12 +35,13 @@ class ViewWishState extends WishPageState {
   final Wish? wish;
   final String? errorMessage;
   final bool isLoading;
+  final bool isWishDeleted;
 
   const ViewWishState(
-      {required this.wish, this.errorMessage, this.isLoading = false});
+      {required this.wish, this.errorMessage, this.isLoading = false, this.isWishDeleted = false});
 
   @override
-  List<Object?> get props => [wish, errorMessage, isLoading];
+  List<Object?> get props => [wish, errorMessage, isLoading, isWishDeleted];
 }
 
 /// Состояние страницы редактирования желания
