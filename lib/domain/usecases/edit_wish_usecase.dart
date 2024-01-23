@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wishlist/domain/enums/wish_status.dart';
 import 'package:wishlist/domain/models/wish.dart';
 import 'package:wishlist/domain/repositories/wish_repository.dart';
@@ -21,6 +22,16 @@ class EditWishUseCase {
     (double, double?)? price,
     bool resetPrice = false,
   }) {
+
+    List<String> imagesForDelete = [];
+    List<String> imagesForSet = [];
+    if(images != null){
+      imagesForDelete = oldWish.images.where((element) => !images.contains(element)).toList();
+      imagesForSet = images.where((element) => !oldWish.images.contains(element)).toList();
+    }
+    print('imagesForDelete = $imagesForDelete');
+    print('imagesForSet = $imagesForSet');
+
     return _wishRepository.replaceWish(Wish(
       uid: oldWish.uid,
       name: name ?? oldWish.name,
@@ -30,6 +41,6 @@ class EditWishUseCase {
       images: images ?? oldWish.images,
       list: list ?? oldWish.list,
       price: price ?? (resetPrice ? null : oldWish.price),
-    ));
+    ), imagesForDelete: imagesForDelete, updateImages: imagesForSet.isNotEmpty || imagesForDelete.isNotEmpty);
   }
 }
