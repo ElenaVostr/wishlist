@@ -6,4 +6,9 @@ abstract final class UrlUtil {
     String fileName = fileNameWithParams.split('?')[0];
     return fileName;
   }
+
+  static bool isUrl(String str) {
+    RegExp pattern = RegExp('^(https?:\\/\\/)');
+    return pattern.hasMatch(str);
+  }
 }

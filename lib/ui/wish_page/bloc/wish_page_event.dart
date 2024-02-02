@@ -96,3 +96,11 @@ class AddImagesEvent extends WishPageEvent {
   @override
   List<Object?> get props => [images];
 }
+
+/// Убрать сообщение об ошибке
+class RemoveErrorStateEvent extends WishPageEvent {
+  const RemoveErrorStateEvent();
+
+  @override
+  List<Object?> get props => [];
+}

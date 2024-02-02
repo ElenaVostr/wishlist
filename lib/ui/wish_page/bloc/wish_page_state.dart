@@ -107,7 +107,7 @@ class EditWishState extends WishPageState implements WishEditable {
       priceIndicationMode: priceIndicationMode ?? this.priceIndicationMode,
       showAddLinkButton: showAddLinkButton ?? this.showAddLinkButton,
       successSave: successSave ?? this.successSave,
-      error: error ?? this.error,
+      error: error ?? (false, null),
     );
   }
 
@@ -169,7 +169,7 @@ class CreateWishState extends WishPageState implements WishEditable {
       priceIndicationMode: priceIndicationMode ?? this.priceIndicationMode,
       showAddLinkButton: showAddLinkButton ?? this.showAddLinkButton,
       successSave: successSave ?? this.successSave,
-      error: error ?? this.error,
+      error: error ?? (false, null),
     );
   }
 

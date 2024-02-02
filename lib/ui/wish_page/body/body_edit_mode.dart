@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wishlist/domain/models/wish.dart';
@@ -43,9 +41,9 @@ class BodyEditMode extends StatelessWidget {
                       onPressed: () async {
                         final result = await Navigator.push(context,
                             MaterialPageRoute(builder: (BuildContext context) {
-                              return ImagePickerScreen(images: state.images);
-                            }));
-                        if(result is List<Link>){
+                          return ImagePickerScreen(images: state.images);
+                        }));
+                        if (result is List<Link>) {
                           wishPageBloc.add(AddImagesEvent(images: result));
                         }
                       },
@@ -60,6 +58,12 @@ class BodyEditMode extends StatelessWidget {
               controller: wishPageBloc.fieldNameController,
               decoration: InputDecoration(
                 filled: true,
+                errorText: state.error.$1
+                    ? (wishPageBloc.fieldNameController != null &&
+                            wishPageBloc.fieldNameController!.text.isEmpty
+                        ? 'Поле не должно быть пустым'
+                        : null)
+                    : null,
                 contentPadding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 16.0),
                 hintText: 'Название',
@@ -165,7 +169,9 @@ class BodyEditMode extends StatelessWidget {
                       const Size(double.infinity, 50)),
                 ),
                 child: Text(
-                  state is CreateWishState ? 'Сохранить желание' : 'Сохранить изменения',
+                  state is CreateWishState
+                      ? 'Сохранить желание'
+                      : 'Сохранить изменения',
                   style: const TextStyle(fontSize: 16),
                 )),
           ),

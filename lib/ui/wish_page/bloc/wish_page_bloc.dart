@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wishlist/common/utils/url_util.dart';
 import 'package:wishlist/domain/enums/wish_status.dart';
 import 'package:wishlist/domain/models/wish.dart';
 import 'package:wishlist/domain/usecases/create_wish_usecase.dart';
@@ -16,7 +17,6 @@ part 'wish_page_event.dart';
 
 part 'wish_page_state.dart';
 
-// TODO: реализовать проверки полей и тексты ошибок
 class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
   final CreateWishUseCase _createWishUseCase;
   final EditWishUseCase _editWishUseCase;
@@ -34,13 +34,13 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
   WishPageBloc(
       {required CreateWishUseCase createWishUseCase,
       required EditWishUseCase editWishUseCase,
-        required GetWishByUidUseCase getWishByUidUseCase,
-        required DeleteWishUseCase deleteWishUseCase,
+      required GetWishByUidUseCase getWishByUidUseCase,
+      required DeleteWishUseCase deleteWishUseCase,
       required WishPageType wishPageType,
       required Wish? initWish})
       : _createWishUseCase = createWishUseCase,
         _editWishUseCase = editWishUseCase,
-  _getWishByUidUseCase = getWishByUidUseCase,
+        _getWishByUidUseCase = getWishByUidUseCase,
         _deleteWishUseCase = deleteWishUseCase,
         super(_getInitialState(wishPageType, initWish)) {
     _init(wishPageType: wishPageType, initWish: initWish);
@@ -82,10 +82,19 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
           add(const SaveLinkEvent());
         }
       });
+
+      fieldNameController?.addListener(() {
+        if (state is WishEditable && (state as WishEditable).error.$1) {
+          if (fieldNameController!.text.isNotEmpty) {
+            add(const RemoveErrorStateEvent());
+          }
+        }
+      });
     }
 
-    if(wishPageType == WishPageType.view && initWish != null){
-      final Stream<Wish> streamWish = _getWishByUidUseCase.run(uid: initWish.uid!);
+    if (wishPageType == WishPageType.view && initWish != null) {
+      final Stream<Wish> streamWish =
+          _getWishByUidUseCase.run(uid: initWish.uid!);
       _streamSubscription = streamWish.listen((data) {
         add(UpdateWishFieldsEvent(wish: data));
       }, onError: (error) {});
@@ -100,22 +109,13 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
     on<CheckPriceIndicationModeEvent>(_onCheckPriceIndicationMode);
     on<AddImagesEvent>(_onAddImages);
     on<DeleteWishEvent>(_onDeleteWish);
-  }
-
-  void _onDeleteWish(
-      DeleteWishEvent event,
-      Emitter<WishPageState> emit,
-      ) {
-    if(state is ViewWishState && (state as ViewWishState).wish != null){
-      _deleteWishUseCase.run(((state as ViewWishState).wish!.uid!));
-      emit(const ViewWishState(wish: null, isWishDeleted: true));
-    }
+    on<RemoveErrorStateEvent>(_onRemoveErrorState);
   }
 
   void _onUpdateWishFields(
-      UpdateWishFieldsEvent event,
-      Emitter<WishPageState> emit,
-      ) {
+    UpdateWishFieldsEvent event,
+    Emitter<WishPageState> emit,
+  ) {
     emit(ViewWishState(wish: event.wish));
   }
 
@@ -186,12 +186,17 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
     Emitter<WishPageState> emit,
   ) {
     String? newLink = fieldLinkController?.text;
-    emit((state as WishEditable).copyWith(
-        showAddLinkButton: true,
-        urls: newLink != null && newLink.isNotEmpty
-            ? [...(state as WishEditable).urls, newLink]
-            : null));
-    fieldLinkController?.clear();
+    if (newLink != null && UrlUtil.isUrl(newLink)) {
+      emit((state as WishEditable).copyWith(
+          showAddLinkButton: true,
+          urls: newLink.isNotEmpty
+              ? [...(state as WishEditable).urls, newLink]
+              : null));
+      fieldLinkController?.clear();
+    } else {
+      emit((state as WishEditable)
+          .copyWith(error: (true, 'Введена некорректная ссылка')));
+    }
   }
 
   void _onRemoveLink(
@@ -239,6 +244,25 @@ class WishPageBloc extends Bloc<WishPageEvent, WishPageState> {
     Emitter<WishPageState> emit,
   ) {
     emit((state as WishEditable).copyWith(images: event.images));
+  }
+
+  void _onDeleteWish(
+    DeleteWishEvent event,
+    Emitter<WishPageState> emit,
+  ) {
+    if (state is ViewWishState && (state as ViewWishState).wish != null) {
+      _deleteWishUseCase.run(((state as ViewWishState).wish!.uid!));
+      emit(const ViewWishState(wish: null, isWishDeleted: true));
+    }
+  }
+
+  void _onRemoveErrorState(
+    RemoveErrorStateEvent event,
+    Emitter<WishPageState> emit,
+  ) {
+    if (state is WishEditable) {
+      emit((state as WishEditable).copyWith(error: (false, null)));
+    }
   }
 
   @override

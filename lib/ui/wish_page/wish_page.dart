@@ -53,6 +53,11 @@ class WishPage extends StatelessWidget {
               if((state is WishEditable && state.successSave) || (state is ViewWishState && state.isWishDeleted)){
                 Navigator.pop(context);
               }
+
+              if(state is WishEditable && state.error.$1 && state.error.$2 != null){
+                final snackBar = SnackBar(content: Text(state.error.$2!));
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
             },
             child: BlocBuilder<WishPageBloc, WishPageState>(
               builder: (context, state) {
