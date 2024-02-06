@@ -14,8 +14,17 @@ class DI {
   static Future<void> registerDependencies() async {
     final firebaseService = FirebaseService();
     await firebaseService.init();
+
+    registerDataComponents(firebaseService);
+    registerDomainComponents();
+  }
+
+  static void registerDataComponents(FirebaseService firebaseService) {
     getit.registerSingleton<FirebaseService>(firebaseService);
     getit.registerFactory<WishRepository>(() => WishRepositoryImpl(firebaseService: firebaseService));
+  }
+
+  static void registerDomainComponents() {
     getit.registerFactory<CreateWishUseCase>(() => CreateWishUseCase(wishRepository: getit.get<WishRepository>()));
     getit.registerFactory<EditWishUseCase>(() => EditWishUseCase(wishRepository: getit.get<WishRepository>()));
     getit.registerFactory<GetWishListStreamUseCase>(() => GetWishListStreamUseCase(wishRepository: getit.get<WishRepository>()));

@@ -1,16 +1,12 @@
 part of 'image_picker_screen_cubit.dart';
 
-abstract class ImagePickerScreenState extends Equatable {
-  const ImagePickerScreenState();
-}
-
-class ImagesLoadedState extends ImagePickerScreenState {
+class ImagePickerScreenState with EquatableMixin {
   final List<String> imagesList;
 
-  const ImagesLoadedState({required this.imagesList});
+  const ImagePickerScreenState({required this.imagesList});
 
-  ImagesLoadedState copyWith({List<String>? imagesList}) {
-    return ImagesLoadedState(
+  ImagePickerScreenState copyWith({List<String>? imagesList}) {
+    return ImagePickerScreenState(
         imagesList: imagesList ?? this.imagesList);
   }
 

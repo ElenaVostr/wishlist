@@ -7,7 +7,7 @@ class CreateWishUseCase {
 
   CreateWishUseCase({required WishRepository wishRepository}) : _wishRepository = wishRepository;
 
-  Future<void> run(Wish wish) async {
+  Future<void> run(Wish wish) {
     return _wishRepository.createWish(wish);
   }
 }

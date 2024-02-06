@@ -2,21 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wishlist/domain/models/wish.dart';
-import 'package:wishlist/ui/common/text_link.dart';
-import 'package:wishlist/ui/common/widget_with_title.dart';
+import 'package:wishlist/ui/common/widgets/text_link.dart';
+import 'package:wishlist/ui/common/widgets/widget_with_title.dart';
 import 'package:wishlist/ui/wish_page/bloc/wish_page_bloc.dart';
-import 'package:wishlist/ui/wish_page/common/images_page_view.dart';
+import 'package:wishlist/ui/wish_page/common/widgets/images_page_view.dart';
 
 class BodyViewMode extends StatelessWidget {
   const BodyViewMode({super.key});
-
-  Widget _drawImagesPageView(List<String> images) {
-    return (images.length > 1
-        ? PageView(
-            children: [for (String image in images) Image.network(image)],
-          )
-        : Image.network(images.first));
-  }
 
   @override
   Widget build(BuildContext context) {

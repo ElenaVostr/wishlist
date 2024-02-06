@@ -1,6 +1,6 @@
 part of 'wish_page_bloc.dart';
 
-abstract class WishPageState extends Equatable {
+sealed class WishPageState extends Equatable {
   const WishPageState();
 }
 

@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:wishlist/ui/common/image_from_path.dart';
+import 'package:wishlist/ui/common/widgets/image_from_path.dart';
 
 ///Виджет возвращает иконку, если список изображение пустой. Если список содержит одно изображение, то его и отображает, а если список больше единицы, то рисует виджет с прокруткой изображение влево или вправо
 class ImagesPageView extends StatelessWidget {

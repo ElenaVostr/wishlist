@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wishlist/ui/common/image_from_path.dart';
+import 'package:wishlist/ui/common/widgets/image_from_path.dart';
 import 'package:wishlist/ui/common/images_picker/cubit/image_picker_screen_cubit.dart';
 
 class ImagePickerScreen extends StatelessWidget {
@@ -16,13 +14,14 @@ class ImagePickerScreen extends StatelessWidget {
       create: (context) => ImagePickerScreenCubit(initImages: images),
       child: Builder(
         builder: (context) {
+          final cubit = context.read<ImagePickerScreenCubit>();
           return BlocBuilder<ImagePickerScreenCubit, ImagePickerScreenState>(
             builder: (context, state) {
               return Scaffold(
                 appBar: AppBar(
                   centerTitle: true,
                   title: Text(
-                      'Выбранные изображения ${(state as ImagesLoadedState).imagesList.length}'),
+                      'Выбранные изображения ${state.imagesList.length}'),
                   leading: IconButton(
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {
@@ -37,8 +36,7 @@ class ImagePickerScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: () => context
-                                .read<ImagePickerScreenCubit>()
+                            onPressed: () => cubit
                                 .openGallery(),
                             label: const Text('Выбрать изображения'),
                             icon: const Icon(Icons.image),
@@ -46,8 +44,7 @@ class ImagePickerScreen extends StatelessWidget {
                         ),
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: () => context
-                                .read<ImagePickerScreenCubit>()
+                            onPressed: () => cubit
                                 .openCamera(),
                             label: const Text('Сделать фото'),
                             icon: const Icon(Icons.camera_alt_outlined),
@@ -78,8 +75,7 @@ class ImagePickerScreen extends StatelessWidget {
                                   ),
                                   style: IconButton.styleFrom(
                                       backgroundColor: Colors.grey.withOpacity(0.2)),
-                                  onPressed: () => context
-                                      .read<ImagePickerScreenCubit>()
+                                  onPressed: () => cubit
                                       .deleteImage(index),
                                 ),
                               )

@@ -1,4 +1,3 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:wishlist/common/utils/json_ext.dart';
 import 'package:wishlist/domain/enums/wish_status.dart';
 import 'package:wishlist/domain/models/wish.dart';
@@ -28,11 +27,11 @@ class WishDoc {
       name: JsonExt.getString(json['name']),
       description: JsonExt.getString(json['description']),
       status: JsonExt.getString(json['status']),
-      urls: JsonExt.getNullList<String>(json['urls'], converter: (e) => e),
+      urls: JsonExt.getNullableList<String>(json['urls'], converter: (e) => e),
       images:
-          JsonExt.getNullList<String>(json['images'], converter: (e) => e),
+          JsonExt.getNullableList<String>(json['images'], converter: (e) => e),
       list: JsonExt.getString(json['list']),
-      price: JsonExt.getNullList<num>(json['price'], converter: (e) => e),
+      price: JsonExt.getNullableList<num>(json['price'], converter: (e) => e),
     );
   }
 
@@ -48,28 +47,13 @@ class WishDoc {
     };
   }
 
-  factory WishDoc.fromWish(Wish wish, FirebaseStorage storage, String? uid) {
+  factory WishDoc.fromWish(Wish wish, {bool isNewWish = false}) {
     return WishDoc(
       name: wish.name,
       description: wish.description,
       status: wish.status.name,
       urls: wish.urls,
-      images: wish.images,
-      list: wish.list,
-      price: wish.price != null
-          ? (wish.price!.$2 != null
-              ? [wish.price!.$1, wish.price!.$2!]
-              : [wish.price!.$1])
-          : null,
-    );
-  }
-
-  factory WishDoc.fromNewWish(Wish wish) {
-    return WishDoc(
-      name: wish.name,
-      description: wish.description,
-      status: wish.status.name,
-      urls: wish.urls,
+      images: isNewWish ? null : wish.images,
       list: wish.list,
       price: wish.price != null
           ? (wish.price!.$2 != null

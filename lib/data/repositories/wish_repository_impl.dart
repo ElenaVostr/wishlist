@@ -16,26 +16,34 @@ class WishRepositoryImpl implements WishRepository {
 
   @override
   Future<void> createWish(Wish wish) async {
-    DocumentReference docRef = await firebaseService.firestore.collection('wishes').add(WishDoc.fromNewWish(wish).toJson());
+    DocumentReference docRef = await firebaseService.firestore
+        .collection('wishes')
+        .add(WishDoc.fromWish(wish, isNewWish: true).toJson());
     return loadImages(images: wish.images, docId: docRef.id);
   }
 
-  Future<void> loadImages({required List<String> images, required String docId}) async {
-    if(images.isNotEmpty){
+  Future<void> loadImages(
+      {required List<String> images, required String docId}) async {
+    if (images.isNotEmpty) {
       List<String> imageList = [];
-      for(String image in images){
-        if(image.contains('https://', 0) || image.contains('http://', 0)){
+      for (String image in images) {
+        if (image.contains('https://', 0) || image.contains('http://', 0)) {
           imageList.add(image);
         } else {
           File imageFile = File(image);
-          String? imageUrl = await uploadImageInStorage(imageFile: imageFile, uid: docId, fileName: basenameWithoutExtension(image));
-          if(imageUrl != null){
+          String? imageUrl = await uploadImageToStorage(
+              imageFile: imageFile,
+              uid: docId,
+              fileName: basenameWithoutExtension(image));
+          if (imageUrl != null) {
             imageList.add(imageUrl);
           }
         }
       }
-      return firebaseService.firestore.collection('wishes').doc(docId).update(
-          {'images': imageList});
+      return firebaseService.firestore
+          .collection('wishes')
+          .doc(docId)
+          .update({'images': imageList});
     }
     return;
   }
@@ -50,7 +58,8 @@ class WishRepositoryImpl implements WishRepository {
     return firebaseService.storage.ref('images/$uid').listAll().then((value) {
       for (var element in value.items) {
         firebaseService.storage.ref(element.fullPath).delete();
-      }});
+      }
+    });
   }
 
   Future<void> deleteImageFromStorage(String uid, String fileName) {
@@ -58,17 +67,19 @@ class WishRepositoryImpl implements WishRepository {
   }
 
   @override
-  Future<void> replaceWish(Wish wish, {List<String>? imagesForDelete, bool updateImages = false}) async {
+  Future<void> replaceWish(Wish wish,
+      {List<String>? imagesForDelete, bool updateImages = false}) async {
     firebaseService.firestore
         .collection('wishes')
         .doc(wish.uid)
-        .update(WishDoc.fromWish(wish, firebaseService.storage, wish.uid).toJson());
-    if(imagesForDelete != null && imagesForDelete.isNotEmpty){
-      for(String filePath in imagesForDelete){
-        await deleteImageFromStorage(wish.uid!, UrlUtil.getFileNameFromUrl(filePath));
+        .update(WishDoc.fromWish(wish).toJson());
+    if (imagesForDelete != null && imagesForDelete.isNotEmpty) {
+      for (String filePath in imagesForDelete) {
+        await deleteImageFromStorage(
+            wish.uid!, UrlUtil.getFileNameFromUrl(filePath));
       }
     }
-    if(updateImages){
+    if (updateImages) {
       await loadImages(images: wish.images, docId: wish.uid!);
     }
     return;
@@ -77,23 +88,33 @@ class WishRepositoryImpl implements WishRepository {
   @override
   Stream<List<Wish>> getWishListStream() {
     return firebaseService.firestore.collection('wishes').snapshots().map(
-        (event) =>
-            event.docs.map((e) => WishDoc.fromJson(e.data()).toWish(e.id)).toList());
+        (event) => event.docs
+            .map((e) => WishDoc.fromJson(e.data()).toWish(e.id))
+            .toList());
   }
 
-  Future<String?> uploadImageInStorage(
-      {required File imageFile, required String uid, required String fileName}) async {
+  Future<String?> uploadImageToStorage(
+      {required File imageFile,
+      required String uid,
+      required String fileName}) async {
     try {
-      var uploadTask = await firebaseService.storage.ref('images/$uid').child(fileName).putFile(imageFile, SettableMetadata(contentType:'image/jpeg'));
+      var uploadTask = await firebaseService.storage
+          .ref('images/$uid')
+          .child(fileName)
+          .putFile(imageFile, SettableMetadata(contentType: 'image/jpeg'));
       return await uploadTask.ref.getDownloadURL();
-    } catch (error, stack) {
+    } catch (error) {
       return null;
     }
   }
 
   @override
   Stream<Wish> getWishByUid(String uid) {
-    return firebaseService.firestore.collection('wishes').doc(uid).snapshots().map((snapshot) {
+    return firebaseService.firestore
+        .collection('wishes')
+        .doc(uid)
+        .snapshots()
+        .map((snapshot) {
       return WishDoc.fromJson(snapshot.data()!).toWish(uid);
     });
   }

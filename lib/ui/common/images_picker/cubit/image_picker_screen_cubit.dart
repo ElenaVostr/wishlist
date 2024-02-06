@@ -7,7 +7,7 @@ part 'image_picker_screen_state.dart';
 class ImagePickerScreenCubit extends Cubit<ImagePickerScreenState> {
   final ImagePicker _picker = ImagePicker();
 
-  ImagePickerScreenCubit({required List<String> initImages}) : super(ImagesLoadedState(imagesList: initImages));
+  ImagePickerScreenCubit({required List<String> initImages}) : super(ImagePickerScreenState(imagesList: initImages));
 
   /// Открыть галерею
   void openGallery() {
@@ -21,10 +21,10 @@ class ImagePickerScreenCubit extends Cubit<ImagePickerScreenState> {
 
   /// Удалить изображение
   void deleteImage(int index) {
-    List<String> images = List.from((state as ImagesLoadedState).imagesList);
+    List<String> images = List.from(state.imagesList);
     images.removeAt(index);
 
-    emit((state as ImagesLoadedState).copyWith(imagesList: images));
+    emit(state.copyWith(imagesList: images));
   }
 
   Future _getImageFromCamera() async {
@@ -34,8 +34,8 @@ class ImagePickerScreenCubit extends Cubit<ImagePickerScreenState> {
         maxWidth: 800,
         maxHeight: 600);
     if (image != null) {
-      emit((state as ImagesLoadedState).copyWith(
-          imagesList: [...(state as ImagesLoadedState).imagesList, image.path]));
+      emit(state.copyWith(
+          imagesList: [...state.imagesList, image.path]));
     }
   }
 
@@ -47,8 +47,8 @@ class ImagePickerScreenCubit extends Cubit<ImagePickerScreenState> {
       for (var image in images) {
         imageFileList.add(image.path);
       }
-      emit((state as ImagesLoadedState).copyWith(
-          imagesList: [...(state as ImagesLoadedState).imagesList, ...imageFileList]));
+      emit(state.copyWith(
+          imagesList: [...state.imagesList, ...imageFileList]));
     }
   }
 }
