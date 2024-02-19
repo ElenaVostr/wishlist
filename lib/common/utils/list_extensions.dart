@@ -25,20 +25,3 @@ extension WhereOrNullExt<T> on Iterable<T> {
     return where((e) => e != null).cast<T>();
   }
 }
-
-extension ListExtensions<T> on List<T> {
-  /// Конвертирует каждый элемент [T] и его индекс в значение [R]
-  Iterable<R> mapIndexed<R>(R Function(int index, T element) convert) sync* {
-    for (var index = 0; index < length; index++) {
-      yield convert(index, this[index]);
-    }
-  }
-
-  int? indexWhereOrNull(WhereCondition<T> condition) {
-    final result = indexWhere(condition);
-    if (result == -1) {
-      return null;
-    }
-    return result;
-  }
-}

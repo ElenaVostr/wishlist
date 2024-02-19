@@ -1,0 +1,1 @@
+enum PriceIndicationMode { priceNotSpecified, onePrice, priceRange }

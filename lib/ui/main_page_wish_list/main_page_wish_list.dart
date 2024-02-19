@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wishlist/di/di.dart';
 import 'package:wishlist/domain/usecases/create_wish_usecase.dart';
 import 'package:wishlist/domain/usecases/get_wish_list_stream_usecase.dart';
-import 'package:wishlist/main.dart';
+import 'package:wishlist/ui/common/enums/wish_page_type.dart';
+import 'package:wishlist/ui/common/widgets/image_from_path.dart';
+import 'package:wishlist/ui/wish_page/wish_page.dart';
 
 import 'bloc/main_page_wish_list_bloc.dart';
 
@@ -25,50 +27,85 @@ class MainPageWishList extends StatelessWidget {
             ),
             body: BlocBuilder<MainPageWishListBloc, MainPageWishListState>(
                 builder: (context, state) {
-                  if (state is LoadingState) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (state is ErrorState) {
-                    return Center(
-                      child: Text(state.errorMessage),
-                    );
-                  } else if (state is WishListLoadedState) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                              child: ListView(
-                                  children: state.wishList
-                                      .map((e) => ListTile(
-                                    leading: e.images.isNotEmpty
-                                        ? Image.network(e.images.first,
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.fill)
+              if (state is LoadingState) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state is ErrorState) {
+                return Center(
+                  child: Text(state.errorMessage),
+                );
+              } else if (state is WishListLoadedState) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                          child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          crossAxisCount: 2,
+                        ),
+                        itemCount: state.wishList.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                              return WishPage(
+                                  wish: state.wishList[index],
+                                  wishPageType: WishPageType.view);
+                            })),
+                            child: Card(
+                              elevation: 8,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: state
+                                        .wishList[index].images.isNotEmpty
+                                        ? ImageFromPath(
+                                        path: state
+                                            .wishList[index].images.first, fit: BoxFit.cover, width: double.maxFinite,)
                                         : Image.asset(
-                                        'assets/images/image_icon.png',
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.fill),
-                                    title: Text(e.name),
-                                    onTap: () => Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                              return WishPage(wish: e);
-                                            })),
-                                  ))
-                                      .toList()))
-                        ],
-                      ),
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                }),
+                                      'assets/images/image_icon.png', fit: BoxFit.cover, width: double.maxFinite,),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 32,
+                                    child: Center(
+                                      child: Text(
+                                        state.wishList[index].name,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontSize: 12, height: 0.8),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ))
+                    ],
+                  ),
+                );
+              } else {
+                return const SizedBox();
+              }
+            }),
             floatingActionButton: FloatingActionButton(
-              onPressed: () => BlocProvider.of<MainPageWishListBloc>(context).add(const CreateWishEvent()),
+              //onPressed: () => BlocProvider.of<MainPageWishListBloc>(context).add(const CreateWishEvent()),
+              onPressed: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
+                return const WishPage(wishPageType: WishPageType.create);
+              })),
               tooltip: 'Increment',
               child: const Icon(Icons.add),
             ),
